@@ -1,0 +1,22 @@
+.chart-container-new {
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 15px;
+}
+
+.chart-header-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-title-new {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.chart-percentage-new {
+  font-size: 1rem;
+  color: #ccc;
+}

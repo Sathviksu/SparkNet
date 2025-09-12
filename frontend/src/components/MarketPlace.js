@@ -3,6 +3,7 @@ import { useWeb3 } from '../context/Web3Context';
 import { useContracts } from '../hooks/useContracts';
 import { useRealTimeData } from '../hooks/useRealTimeData';
 import { useCurrency } from '../hooks/useCurrency';
+import { useSustainability } from '../context/SustainabilityContext';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { API_BASE_URL } from '../utils/constants';
@@ -12,7 +13,8 @@ const Marketplace = () => {
   const { erc20, connected: contractsConnected } = useContracts();
   const { energyData } = useRealTimeData();
   const { ethToInr, inrToEth, formatINR, formatETH, ethToInrRate } = useCurrency();
-  
+  const { increaseScore } = useSustainability();
+
   const [userTokenBalance, setUserTokenBalance] = useState('0');
   const [userEthBalance, setUserEthBalance] = useState('0');
   const [buyAmount, setBuyAmount] = useState('');
@@ -21,63 +23,45 @@ const Marketplace = () => {
   const [showINR, setShowINR] = useState(true);
   const [contractPrice, setContractPrice] = useState('0.001');
 
-  // Get current prices from real-time data
   const currentPriceETH = energyData.marketData?.current_price_eth || contractPrice;
   const currentPriceINR = energyData.marketData?.current_price_inr || ethToInr(parseFloat(currentPriceETH));
   const marketData = energyData.marketData;
 
-  // Fetch balances and contract data
+  // Fetch balances
   useEffect(() => {
     const fetchBalances = async () => {
-      if (!connected || !contractsConnected || !erc20 || !account) {
-        console.log('❌ Not ready to fetch balances:', { connected, contractsConnected, account });
-        return;
-      }
+      if (!connected || !contractsConnected || !erc20 || !account) return;
 
       try {
-        console.log('🔄 Fetching balances for:', account);
-
-        // Get ETH balance
         const provider = erc20.runner.provider;
         const ethBalance = await provider.getBalance(account);
         setUserEthBalance(ethers.formatEther(ethBalance));
 
-        // Get token balance
         const tokenBalance = await erc20.balanceOf(account);
         setUserTokenBalance(ethers.formatEther(tokenBalance));
 
-        // Get contract price
         const price = await erc20.getTokenPriceETH();
         setContractPrice(ethers.formatEther(price));
-
-        console.log('✅ Balances updated:', {
-          eth: ethers.formatEther(ethBalance),
-          tokens: ethers.formatEther(tokenBalance),
-          price: ethers.formatEther(price)
-        });
-
       } catch (error) {
         console.error('❌ Error fetching balances:', error);
       }
     };
 
     fetchBalances();
-    
-    // Update balances every 10 seconds
     const interval = setInterval(fetchBalances, 10000);
     return () => clearInterval(interval);
   }, [connected, contractsConnected, erc20, account]);
 
-  // Fetch analytics summary
+  // Fetch analytics
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/analytics/summary`);
-        if (response.data.success) {
-          setAnalytics(response.data.summary);
+        const res = await axios.get(`${API_BASE_URL}/analytics/summary`);
+        if (res.data.success) {
+          setAnalytics(res.data.summary);
         }
-      } catch (error) {
-        console.error('Error fetching analytics:', error);
+      } catch (err) {
+        console.error('Error fetching analytics:', err);
       }
     };
 
@@ -86,116 +70,92 @@ const Marketplace = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Real blockchain token purchase function
   const handleBuyTokens = async () => {
     if (!buyAmount || !connected || !contractsConnected || !erc20) {
       alert('❌ Please connect your wallet and enter an amount');
       return;
     }
 
+    const amount = parseFloat(buyAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('❌ Invalid token amount');
+      return;
+    }
+
     try {
       setLoading(true);
-      
-      const amount = parseFloat(buyAmount);
-      if (amount <= 0) {
-        alert('❌ Please enter a valid amount');
-        return;
-      }
 
-      console.log('🔄 Starting token purchase...');
-      console.log('💰 Amount:', amount, 'tokens');
-      console.log('📊 Contract price:', contractPrice, 'ETH per token');
-
-      // Calculate total cost in ETH
       const pricePerToken = parseFloat(contractPrice);
       const totalCostETH = amount * pricePerToken;
-      const totalCostWei = ethers.parseEther(totalCostETH.toString());
+      const totalCostWei = ethers.parseEther(totalCostETH.toFixed(18));
 
-      console.log('💵 Total cost:', totalCostETH, 'ETH');
-
-      // Check if user has enough ETH
       const ethBalance = parseFloat(userEthBalance);
       if (ethBalance < totalCostETH) {
-        alert(`❌ Insufficient ETH balance!\n\nRequired: ${totalCostETH.toFixed(6)} ETH\nAvailable: ${ethBalance.toFixed(6)} ETH`);
+        alert(`❌ Insufficient ETH balance!\nRequired: ${totalCostETH.toFixed(6)} ETH\nAvailable: ${ethBalance.toFixed(6)} ETH`);
         return;
       }
 
-      // Call smart contract buyTokens function
-      console.log('🔗 Calling smart contract...');
-      const tx = await erc20.buyTokens({
-        value: totalCostWei
-      });
+      // Optional: Estimate gas
+      // const gasEstimate = await erc20.buyTokens.estimateGas({ value: totalCostWei });
 
-      console.log('⏳ Transaction sent:', tx.hash);
-      alert(`🔄 Transaction sent!\n\nHash: ${tx.hash.substring(0, 20)}...\n\nWaiting for confirmation...`);
+      const tx = await erc20.buyTokens({ value: totalCostWei });
 
-      // Wait for transaction confirmation
+      alert(`🔄 Transaction sent!\nTX Hash: ${tx.hash.substring(0, 20)}...`);
+
       const receipt = await tx.wait();
-      console.log('✅ Transaction confirmed:', receipt);
 
-      // Show success message
+      increaseScore(amount);
+
       const totalCostINR = ethToInr(totalCostETH);
-      alert(`🎉 Purchase Successful!\n\n💰 Purchased: ${amount} kWh tokens\n💵 Cost: ${totalCostETH.toFixed(6)} ETH (${formatINR(totalCostINR)})\n🔗 TX: ${receipt.hash.substring(0, 20)}...`);
+      alert(`🎉 Purchase Successful!\n\nPurchased: ${amount} kWh tokens\nCost: ${totalCostETH.toFixed(6)} ETH (${formatINR(totalCostINR)})\nTX: ${receipt.hash.substring(0, 20)}...`);
 
-      // Reset form and refresh balances
       setBuyAmount('');
-      
-      // Refresh balances after transaction
-      setTimeout(async () => {
-        try {
-          const provider = erc20.runner.provider;
-          const ethBalance = await provider.getBalance(account);
-          setUserEthBalance(ethers.formatEther(ethBalance));
 
-          const tokenBalance = await erc20.balanceOf(account);
-          setUserTokenBalance(ethers.formatEther(tokenBalance));
-        } catch (error) {
-          console.error('Error refreshing balances:', error);
-        }
-      }, 2000);
+      // Refresh balances
+      const provider = erc20.runner.provider;
+      const newEthBalance = await provider.getBalance(account);
+      setUserEthBalance(ethers.formatEther(newEthBalance));
+
+      const newTokenBalance = await erc20.balanceOf(account);
+      setUserTokenBalance(ethers.formatEther(newTokenBalance));
 
     } catch (error) {
       console.error('❌ Transaction failed:', error);
-      
-      let errorMessage = 'Transaction failed: ';
-      
-      if (error.code === 'ACTION_REJECTED') {
-        errorMessage = '🚫 Transaction cancelled by user';
-      } else if (error.message.includes('insufficient funds')) {
-        errorMessage = '❌ Insufficient ETH for transaction';
-      } else if (error.message.includes('user rejected')) {
-        errorMessage = '🚫 Transaction rejected by user';
+      let msg = 'Transaction failed: ';
+
+      if (error.code === 'ACTION_REJECTED' || error.message?.includes('user rejected')) {
+        msg = '🚫 Transaction rejected by user';
+      } else if (error.message?.includes('insufficient funds')) {
+        msg = '❌ Insufficient ETH for transaction';
       } else {
-        errorMessage += error.message || 'Unknown error';
+        msg += error.message || 'Unknown error';
       }
-      
-      alert(errorMessage);
+
+      alert(msg);
     } finally {
       setLoading(false);
     }
   };
 
   const calculateCost = () => {
-    if (!buyAmount) return { eth: 0, inr: 0 };
-    const ethCost = parseFloat(buyAmount) * parseFloat(contractPrice);
-    const inrCost = ethToInr(ethCost);
-    return { eth: ethCost, inr: inrCost };
+    const amount = parseFloat(buyAmount);
+    if (isNaN(amount) || amount <= 0) return { eth: 0, inr: 0 };
+
+    const ethCost = amount * parseFloat(contractPrice);
+    return {
+      eth: ethCost,
+      inr: ethToInr(ethCost)
+    };
   };
 
   const cost = calculateCost();
 
-  // Show connection status
-  if (walletLoading) {
-    return <div className="marketplace">🔄 Connecting to wallet...</div>;
-  }
-
+  if (walletLoading) return <div className="marketplace">🔄 Connecting to wallet...</div>;
   if (!connected) {
     return (
       <div className="marketplace">
         <h2>⚡ Energy Token Marketplace</h2>
-        <div className="connect-prompt">
-          <p>🔗 Please connect your MetaMask wallet to start trading energy tokens</p>
-        </div>
+        <p>🔗 Please connect your MetaMask wallet to start trading energy tokens</p>
       </div>
     );
   }
@@ -204,9 +164,7 @@ const Marketplace = () => {
     return (
       <div className="marketplace">
         <h2>⚡ Energy Token Marketplace</h2>
-        <div className="connect-prompt">
-          <p>❌ Smart contracts not available. Please check your network connection.</p>
-        </div>
+        <p>❌ Smart contracts not available. Please check your network connection.</p>
       </div>
     );
   }
@@ -216,38 +174,21 @@ const Marketplace = () => {
       <div className="marketplace-header">
         <h2>⚡ Energy Token Marketplace</h2>
         <div className="currency-toggle">
-          <button 
-            className={showINR ? 'active' : ''} 
-            onClick={() => setShowINR(true)}
-          >
-            ₹ INR
-          </button>
-          <button 
-            className={!showINR ? 'active' : ''} 
-            onClick={() => setShowINR(false)}
-          >
-            Ξ ETH
-          </button>
+          <button className={showINR ? 'active' : ''} onClick={() => setShowINR(true)}>₹ INR</button>
+          <button className={!showINR ? 'active' : ''} onClick={() => setShowINR(false)}>Ξ ETH</button>
         </div>
       </div>
-      
+
       <div className="market-info">
         <div className="price-display">
           <h3>💰 Current Price per kWh</h3>
-          {showINR ? (
-            <div className="price-container">
-              <p className="price-main">{formatINR(currentPriceINR)}</p>
-              <p className="price-secondary">{formatETH(parseFloat(contractPrice))}</p>
-            </div>
-          ) : (
-            <div className="price-container">
-              <p className="price-main">{formatETH(parseFloat(contractPrice))}</p>
-              <p className="price-secondary">{formatINR(currentPriceINR)}</p>
-            </div>
-          )}
+          <div className="price-container">
+            <p className="price-main">{showINR ? formatINR(currentPriceINR) : formatETH(contractPrice)}</p>
+            <p className="price-secondary">{showINR ? formatETH(contractPrice) : formatINR(currentPriceINR)}</p>
+          </div>
           <small>Live blockchain price • 1 ETH = {formatINR(ethToInrRate)}</small>
         </div>
-        
+
         {marketData && (
           <div className="market-stats">
             <h4>📊 Market Overview</h4>
@@ -267,7 +208,7 @@ const Marketplace = () => {
             </div>
           </div>
         )}
-        
+
         <div className="balance-info">
           <h4>💼 Your Wallet</h4>
           <div className="balance-item">
@@ -276,7 +217,7 @@ const Marketplace = () => {
           </div>
           <div className="balance-item">
             <span>ETH Balance:</span>
-            <span>{formatETH(parseFloat(userEthBalance))} ({formatINR(ethToInr(parseFloat(userEthBalance)))})</span>
+            <span>{formatETH(userEthBalance)} ({formatINR(ethToInr(parseFloat(userEthBalance)))})</span>
           </div>
         </div>
       </div>
@@ -290,39 +231,34 @@ const Marketplace = () => {
             value={buyAmount}
             onChange={(e) => setBuyAmount(e.target.value)}
             min="0"
-            step="0.1"
+            step="0.01"
+            inputMode="decimal"
           />
-          
+
           {buyAmount && (
             <div className="cost-breakdown">
               <div className="cost-item">
                 <span>💵 Total Cost:</span>
-                {showINR ? (
-                  <span className="cost-main">{formatINR(cost.inr)}</span>
-                ) : (
-                  <span className="cost-main">{formatETH(cost.eth)}</span>
-                )}
+                <span className="cost-main">
+                  {showINR ? formatINR(cost.inr) : formatETH(cost.eth)}
+                </span>
               </div>
               <div className="cost-item secondary">
                 <span>Equivalent:</span>
-                {showINR ? (
-                  <span>{formatETH(cost.eth)}</span>
-                ) : (
-                  <span>{formatINR(cost.inr)}</span>
-                )}
+                <span>{showINR ? formatETH(cost.eth) : formatINR(cost.inr)}</span>
               </div>
               <div className="blockchain-notice">
                 🔗 Real blockchain transaction • Gas fees may apply
               </div>
             </div>
           )}
-          
-          <button 
+
+          <button
             onClick={handleBuyTokens}
-            disabled={loading || !buyAmount || parseFloat(buyAmount) <= 0}
+            disabled={loading || isNaN(parseFloat(buyAmount)) || parseFloat(buyAmount) <= 0}
             className="buy-button"
           >
-            {loading ? '⏳ Processing Blockchain Transaction...' : '🚀 Buy Tokens (MetaMask)'}
+            {loading ? '⏳ Processing Transaction...' : '🚀 Buy Tokens'}
           </button>
         </div>
       </div>

@@ -1,32 +1,16 @@
 import React from 'react';
-import ConnectWallet from './ConnectWallet';
-import ProducerList from './ProducerList';
-import Marketplace from './MarketPlace';
+import SustainabilityTracker from './SustainabilityTracker';
 import PriceChart from './PriceChart';
+import './../styles/Dashboard.css';
 
 const Dashboard = () => {
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
-        <h1>🌞SparkNet - Decentralized Energy Trading Platform</h1>
-        <ConnectWallet />
-      </header>
-      
-      <main className="dashboard-content">
-        <div className="dashboard-grid">
-          <section className="producers-section">
-            <ProducerList />
-          </section>
-          
-          <section className="marketplace-section">
-            <Marketplace />
-          </section>
-          
-          <section className="analytics-section">
-            <PriceChart />
-          </section>
-        </div>
-      </main>
+    <div className="dashboard-container">
+      <SustainabilityTracker />
+      <div className="dashboard-charts">
+        <PriceChart title="Carbon Footprint Over Time" percentage="-5%" />
+        <PriceChart title="Energy Consumption" percentage="+2%" />
+      </div>
     </div>
   );
 };

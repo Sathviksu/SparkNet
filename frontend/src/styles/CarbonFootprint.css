@@ -1,0 +1,37 @@
+.carbon-footprint-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 2px solid #4caf50;
+}
+
+.carbon-footprint-card h3 {
+  color: #004d40;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.savings-display {
+  margin: 1rem 0;
+}
+
+.savings-value {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.savings-unit {
+  font-size: 1.2rem;
+  color: #333;
+  margin-left: 0.5rem;
+}
+
+.carbon-footprint-card p {
+  font-size: 0.9rem;
+  color: #666;
+  max-width: 80%;
+  margin: 0 auto;
+}

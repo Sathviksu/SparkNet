@@ -1,0 +1,63 @@
+.tracker-container {
+  background: linear-gradient(135deg, #1e8e3e, #11522a);
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.tracker-header h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+}
+
+.tracker-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.tracker-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.card h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin: 0 0 0.5rem 0;
+}
+
+.card .metric {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.card .change {
+  margin: 0.5rem 0 0 0;
+  font-weight: 500;
+}
+
+.card .change.down {
+  color: #fdd835;
+}
+
+.card .change.up {
+  color: #81c784;
+}
+
+.card .target {
+  margin: 0.5rem 0 0 0;
+  opacity: 0.9;
+}

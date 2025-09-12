@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRealTimeData } from '../hooks/useRealTimeData';
+import { useSustainability } from '../context/SustainabilityContext';
 import { API_BASE_URL } from '../utils/constants';
 
 const ProducerList = () => {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const { energyData, connected } = useRealTimeData();
+  const { decreaseScore } = useSustainability();
 
-  // Fetch device information
   useEffect(() => {
     const fetchDevices = async () => {
       try {
@@ -22,71 +23,78 @@ const ProducerList = () => {
         setLoading(false);
       }
     };
-
     fetchDevices();
   }, []);
 
-  // Combine device info with live readings
-  const getEnrichedProducers = () => {
-    return devices.map(device => {
-      const currentReading = energyData.readings.find(
-        reading => reading.device_id === device.id
-      );
+  const enrichedProducers = devices.map(device => {
+    const currentReading = energyData.readings.find(r => r.device_id === device.id);
+    return {
+      ...device,
+      currentReading,
+      isOnline: connected && currentReading && currentReading.current_power_kw > 0,
+    };
+  });
 
-      return {
-        ...device,
-        currentReading,
-        isOnline: connected && currentReading && currentReading.current_power_kw > 0
-      };
-    });
+  const handleSell = (amount) => {
+    decreaseScore(amount);
+    alert(`Successfully sold ${amount.toFixed(2)} kWh of energy! Your sustainability score has been updated.`);
   };
 
   if (loading) {
-    return <div className="loading">Loading solar producers...</div>;
+    return <div className="loading-message">Loading solar producers...</div>;
   }
-
-  const enrichedProducers = getEnrichedProducers();
 
   return (
     <div className="producer-list">
       <div className="section-header">
-        <h2>🌞 Solar Energy Producers</h2>
-        <div className="connection-status">
-          <span className={`status-indicator ${connected ? 'connected' : 'disconnected'}`}>
-            {connected ? '🟢 Live Data' : '🔴 Disconnected'}
-          </span>
+        <h2>Solar Energy Producers</h2>
+        <div className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
+          {connected ? 'Live Data Feed' : 'Feed Disconnected'}
         </div>
       </div>
 
       {enrichedProducers.length === 0 ? (
-        <p>No producers found</p>
+        <div className="no-producers-message">No solar producers are currently registered.</div>
       ) : (
         <div className="producers-grid">
           {enrichedProducers.map((producer) => (
-            <div key={producer.id} className="producer-card">
+            <div key={producer.id} className={`producer-card ${!producer.isOnline ? 'offline' : ''}`}>
               <div className="producer-header">
-                <h3>{producer.id}</h3>
-                <span className={`status ${producer.isOnline ? 'online' : 'offline'}`}>
-                  {producer.isOnline ? '🟢 Active' : '🔴 Inactive'}
+                <h3>{producer.name || producer.id}</h3>
+                <span className={`status-badge ${producer.isOnline ? 'online' : 'offline'}`}>
+                  {producer.isOnline ? 'Active' : 'Inactive'}
                 </span>
               </div>
-              
-              <div className="producer-details">
-                <p><strong>Location:</strong> {producer.location}</p>
-                <p><strong>Owner:</strong> {producer.owner.substring(0, 10)}...</p>
-                <p><strong>Capacity:</strong> {producer.capacity_kw} kW</p>
-                <p><strong>Efficiency:</strong> {(producer.efficiency * 100).toFixed(1)}%</p>
-                
-                {producer.currentReading && (
+
+              <div className="producer-body">
+                <div className="producer-info">
+                  <p><strong>Location:</strong> {producer.location}</p>
+                  <p><strong>Owner:</strong> {producer.owner.substring(0, 15)}...</p>
+                  <p><strong>Capacity:</strong> {producer.capacity_kw} kW</p>
+                </div>
+
+                {producer.isOnline && producer.currentReading ? (
                   <div className="live-data">
-                    <hr />
-                    <p><strong>🔥 Live Power:</strong> {producer.currentReading.current_power_kw} kW</p>
-                    <p><strong>⚡ Energy Today:</strong> {producer.currentReading.energy_produced_kwh} kWh</p>
-                    <p><strong>🌤️ Weather:</strong> {producer.currentReading.weather_condition}</p>
-                    <p><strong>🌡️ Temperature:</strong> {producer.currentReading.temperature_celsius}°C</p>
-                    <p><strong>☀️ Sun Intensity:</strong> {(producer.currentReading.sunlight_intensity * 100).toFixed(0)}%</p>
+                    <h4>Live Readings</h4>
+                    <p><strong>Power:</strong> {producer.currentReading.current_power_kw.toFixed(2)} kW</p>
+                    <p><strong>Energy Today:</strong> {producer.currentReading.energy_produced_kwh.toFixed(2)} kWh</p>
+                    <p><strong>Weather:</strong> {producer.currentReading.weather_condition}</p>
+                  </div>
+                ) : (
+                  <div className="no-live-data">
+                    <p>No live data available</p>
                   </div>
                 )}
+              </div>
+
+              <div className="producer-footer">
+                <button 
+                  className="sell-button" 
+                  onClick={() => handleSell(producer.currentReading.energy_produced_kwh)}
+                  disabled={!producer.isOnline || !producer.currentReading || producer.currentReading.energy_produced_kwh <= 0}
+                >
+                  Sell Energy
+                </button>
               </div>
             </div>
           ))}

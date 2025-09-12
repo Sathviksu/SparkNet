@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import './../styles/PriceChart.css';
+import './../styles/Chart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -22,24 +22,38 @@ ChartJS.register(
   Legend
 );
 
-const PriceChart = ({ title, percentage }) => {
+const Chart = () => {
   const data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
-        label: title,
-        data: [65, 59, 80, 81, 56, 55, 40, 57, 40, 48, 59, 62],
-        fill: false,
-        borderColor: '#4caf50',
+        label: 'Energy Production',
+        data: [120, 150, 170, 200, 210, 205, 190, 195, 220, 240, 230, 250],
+        fill: true,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        tension: 0.4,
+      },
+      {
+        label: 'Energy Consumption',
+        data: [80, 90, 85, 100, 110, 115, 105, 120, 130, 125, 140, 150],
+        fill: true,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
         tension: 0.4,
       },
     ],
   };
 
   const options = {
+    responsive: true,
     plugins: {
       legend: {
-        display: false,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Energy Production and Consumption',
       },
     },
     scales: {
@@ -47,31 +61,20 @@ const PriceChart = ({ title, percentage }) => {
         grid: {
           display: false,
         },
-        ticks: {
-          color: '#ccc',
-        }
       },
       y: {
         grid: {
-          color: '#444',
-          borderDash: [5, 5],
+          color: 'rgba(0, 0, 0, 0.1)',
         },
-        ticks: {
-          color: '#ccc',
-        }
       },
     },
   };
 
   return (
-    <div className="chart-container-new">
-      <div className="chart-header-new">
-        <div className="chart-title-new">{title}</div>
-        <div className="chart-percentage-new">{percentage} from last month</div>
-      </div>
+    <div className="chart-container">
       <Line data={data} options={options} />
     </div>
   );
 };
 
-export default PriceChart;
+export default Chart;
