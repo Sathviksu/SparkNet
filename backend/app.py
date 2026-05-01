@@ -13,7 +13,8 @@ from datetime import datetime, timedelta
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"], allow_headers=["Content-Type"], methods=["GET", "POST", "OPTIONS"])
+# In production, you can replace "*" with your specific Vercel URL for better security
+CORS(app, origins="*", allow_headers=["Content-Type"], methods=["GET", "POST", "OPTIONS"])
 
 # ===== GLOBAL DATA STORAGE =====
 SOLAR_DEVICES = []
