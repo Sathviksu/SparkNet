@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../utils/constants';
 import './styles/LandingPage.css';
 
@@ -29,8 +30,16 @@ const HOW_IT_WORKS = [
 ];
 
 const LandingPage = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ price_inr: '₹5.00', active_producers: 5, production_kwh: '—' });
   const [statsLoaded, setStatsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     const fetchStats = async () => {

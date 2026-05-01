@@ -144,9 +144,9 @@ const Dashboard = () => {
           </h1>
           <p className="section-subtitle">
             Welcome back{userProfile?.email ? `, ${userProfile.email.split('@')[0]}` : ''} · {' '}
-            <span className={`badge ${backendOnline ? 'badge-green' : 'badge-red'}`}>
-              <span className={`dot ${backendOnline ? 'dot-green' : 'dot-red'}`} />
-              {backendOnline ? 'Live' : 'Offline'}
+            <span className={`badge ${backendOnline ? 'badge-green' : 'badge-yellow'}`}>
+              <span className={`dot ${backendOnline ? 'dot-green' : 'dot-yellow'}`} />
+              {backendOnline ? 'Live' : 'Initializing System...'}
             </span>
             {lastRefresh && <span style={{color:'var(--text-muted)',fontSize:'0.78rem',marginLeft:8}}>Updated {lastRefresh.toLocaleTimeString()}</span>}
           </p>
