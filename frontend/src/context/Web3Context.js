@@ -92,8 +92,8 @@ export function Web3Provider({ children }) {
                 method: 'wallet_addEthereumChain',
                 params: [{
                   chainId: `0x${REQUIRED_CHAIN_ID.toString(16)}`,
-                  chainName: 'Hardhat Local',
-                  rpcUrls: ['http://127.0.0.1:8545'],
+                  chainName: 'Polygon Amoy',
+                  rpcUrls: ['https://rpc-amoy.polygon.technology'],
                   nativeCurrency: {
                     name: 'Ether',
                     symbol: 'ETH',

@@ -77,7 +77,7 @@ const Dashboard = () => {
       if (mktRes.data.success) {
         const md = mktRes.data.market_data;
         setMarketData(md);
-        try { await savePricePoint(md.current_price_eth, md.current_price_inr); } catch {}
+        savePricePoint(md.current_price_eth, md.current_price_inr).catch(() => {});
       }
       if (anlRes.data.success) setAnalytics(anlRes.data.summary);
       
