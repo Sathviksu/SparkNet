@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/constants';
 
 export const useRealTimeData = () => {
   const [energyData, setEnergyData] = useState({
@@ -13,16 +14,10 @@ export const useRealTimeData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('🔄 Attempting to fetch data from backend...');
-        
-        // Test backend connection first
-        const healthResponse = await axios.get('http://localhost:5000/api/health');
-        console.log('✅ Backend health check:', healthResponse.data);
-        
         // Fetch actual data
         const [readingsResponse, marketResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/readings/current'),
-          axios.get('http://localhost:5000/api/market/data')
+          axios.get(`${API_BASE_URL}/readings/current`),
+          axios.get(`${API_BASE_URL}/market/data`)
         ]);
         
         console.log('📊 Readings response:', readingsResponse.data);

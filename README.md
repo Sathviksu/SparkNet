@@ -1,142 +1,94 @@
-# ⚡ SparkNet - Premium IoT Energy Trading Platform
+# ⚡ SparkNet: Decentralized Energy Trading Platform
 
-A production-grade decentralized peer-to-peer energy trading platform. SparkNet combines real-time IoT sensor telemetry, automated market simulations, Ethereum smart contracts, and a high-performance React UI to enable seamless green energy trading.
+[![Blockchain: Polygon Amoy](https://img.shields.io/badge/Blockchain-Polygon%20Amoy-8247E5?style=for-the-badge&logo=polygon&logoColor=white)](https://amoy.polygonscan.com/)
+[![Frontend: React](https://img.shields.io/badge/Frontend-React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![Backend: Flask](https://img.shields.io/badge/Backend-Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Database: Firebase](https://img.shields.io/badge/Database-Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-![React](https://img.shields.io/badge/React-18.2-blue)
-![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue)
-![Flask](https://img.shields.io/badge/Flask-3.0-white)
-![Firebase](https://img.shields.io/badge/Firebase-9.0-orange)
-![Jest](https://img.shields.io/badge/Jest-Tests-green)
+**SparkNet** is a production-grade decentralized energy marketplace that empowers users to trade renewable energy (solar) directly using blockchain technology. It features real-time IoT simulation, NFT producer credentials, and a gamified sustainability leaderboard.
 
 ---
 
-## 🌟 Premium Features
+## 🌟 Key Features
 
-### 🎨 State-of-the-Art UI/UX
-- **Dark-Mode First**: Premium aesthetic using a curated `#070B14` palette with electric neon accents.
-- **Glassmorphism**: Modern frosted-glass design system with real-time blur and depth.
-- **Dynamic Animations**: Smooth transitions, pulsing status indicators, and animated SVG backgrounds.
-- **Fully Responsive**: Optimized for desktop, tablet, and mobile viewports.
+### 🏦 Decentralized Marketplace
+- Buy and sell energy tokens (ENERGY) at fair market rates (₹5/kWh).
+- Real-time price tracking with ETH/INR conversion.
+- Automated peer-to-peer trading via Smart Contracts.
 
-### 🛡️ Secure Infrastructure
-- **Firebase Auth**: Production-ready authentication replacing insecure mock systems.
-- **Firestore Real-time DB**: Live synchronization of transaction history, price trends, and user profiles.
-- **On-Chain Logic**: ERC-20 Energy Tokens and ERC-721 Producer NFTs ensure immutable ownership and transparency.
+### ☀️ IoT Solar Simulation
+- Live telemetry simulation of solar panels across multiple Indian cities.
+- Weather-aware production forecasting using orbital mechanics simulation.
+- Temperature and sunlight intensity impact on energy yields.
 
-### 📊 Real-time Data Visualization
-- **Live Price Charts**: Animated `Chart.js` integration showing real-time market fluctuations.
-- **IoT Telemetry Grid**: 5 simulated solar installations across India feeding live production data.
-- **Sustainability Score**: Gamified impact tracking based on clean energy trading volume.
+### 🏆 Sustainability & Gamification
+- **Leaderboard**: Rank up based on your green energy impact.
+- **Ranks**: Seedling → Sprout → Green Knight → Forest Guardian.
+- **Achievements**: Earn "Elite" and "Pro" badges for trading milestones.
 
-### 🧪 Comprehensive Testing Suite
-- **Frontend**: Unit and integration tests using **Jest** and **React Testing Library**.
-- **Backend**: API endpoint validation using **pytest**.
-- **Blockchain**: Smart contract security and logic tests using **Hardhat** & **Chai**.
+### 🔐 Secure & Modern Auth
+- Google One-Tap Login integrated with Firebase.
+- Role-based access for Producers (Sellers) and Consumers (Buyers).
+- NFT-backed producer verification.
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 18, ethers.js v6, Chart.js, Firebase SDK |
-| **Backend** | Python Flask, Flask-CORS, IoT Simulation Engine |
-| **Blockchain** | Solidity 0.8.24, Hardhat, OpenZeppelin |
-| **Database** | Firebase Firestore (Cloud persistence) |
-| **Auth** | Firebase Auth (JWT based) |
+- **Blockchain**: Solidity, Hardhat, Ethers.js (Polygon Amoy Testnet).
+- **Frontend**: React.js, Glassmorphism CSS, Framer Motion animations.
+- **Backend**: Python, Flask, Gunicorn (Production server).
+- **Services**: Firebase Auth, Firestore (Real-time data).
+- **Infrastructure**: Docker, Docker Compose, Vercel, Render.
 
 ---
 
-## 🏗 Architecture
+## 📂 Project Structure
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    SPARKNET ECOSYSTEM                      │
-└─────────────────────────────────────────────────────────────┘
-
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Frontend   │◀───▶│   Firebase   │◀───▶│  Blockchain  │
-│   (React)    │     │ (Auth/Store) │     │  (Hardhat)   │
-└──────────────┘     └──────────────┘     └──────────────┘
-       ▲                    ▲                    ▲
-       │             ┌──────┴──────┐             │
-       └────────────▶│   Backend   │◀────────────┘
-                     │   (Flask)    │
-                     └──────────────┘
+```text
+sparknet-iotopia-2025/
+├── blockchain/          # Smart contracts (Solidity) & Hardhat scripts
+├── backend/             # Flask IoT simulation engine
+├── frontend/            # React dashboard & Marketplace UI
+└── docker-compose.yml   # Full-stack orchestration
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v18+)
-- Python (v3.9+)
-- MetaMask browser extension
-- Firebase Project (Free tier)
+### 🐳 Running with Docker (Recommended)
+1. Ensure Docker Desktop is running.
+2. Clone the repo and run:
+   ```bash
+   docker-compose up --build
+   ```
+3. Access the dashboard at `http://localhost:3000`.
 
-### 1. Firebase Setup
-1. Create a project at [Firebase Console](https://console.firebase.google.com/).
-2. Enable **Email/Password** Authentication.
-3. Create a **Firestore** database in test mode.
-4. Create `.env` in `frontend/` with your config:
-```env
-REACT_APP_FIREBASE_API_KEY=your_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
-```
-
-### 2. Blockchain Setup
-```bash
-cd blockchain
-npm install
-npx hardhat node
-# In new terminal
-npx hardhat run scripts/deploy.js --network localhost
-```
-
-### 3. Backend Setup
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
-python app.py
-```
-
-### 4. Frontend Setup
-```bash
-cd frontend
-npm install
-npm start
-```
+### 💻 Local Development
+1. **Blockchain**: `cd blockchain && npx hardhat node`
+2. **Backend**: `cd backend && python app.py`
+3. **Frontend**: `cd frontend && npm start`
 
 ---
 
-## 🧪 Running Tests
+## 🌍 Deployment
 
-### Frontend (Jest)
-```bash
-cd frontend
-npm test
-```
+### ⛓ Smart Contracts
+Deployed on **Polygon Amoy**:
+- **EnergyToken**: `0x0d12E81e9dbc888123143d9A1C58342E472EEdA4`
+- **ProducerNFT**: `0xc385D7E60A77593CD6401Abf64411eBd7dfa3392`
 
-### Backend (Pytest)
-```bash
-cd backend
-pytest
-```
+### ⚛️ Frontend (Vercel)
+The frontend is hosted on Vercel with automated GitHub CI/CD.
 
-### Smart Contracts (Hardhat)
-```bash
-cd blockchain
-npx hardhat test
-```
+### 🐍 Backend (Render)
+The simulation engine is hosted on Render using a Gunicorn production server.
 
 ---
+
+## 🤝 Contributing
+Contributions are welcome! Please open an issue or submit a pull request for any feature additions or bug fixes.
 
 ## 📄 License
-MIT License - SparkNet IoTopia 2025
+This project is licensed under the MIT License.

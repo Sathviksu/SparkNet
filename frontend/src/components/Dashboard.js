@@ -52,25 +52,39 @@ const Dashboard = () => {
   const [lastRefresh, setLastRefresh] = useState(null);
 
   const fetchData = useCallback(async () => {
+    console.log('🔄 Dashboard: Refreshing data...');
     try {
-      const [devRes, readRes, mktRes, anlRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/devices`),
-        axios.get(`${API_BASE_URL}/readings/current`),
-        axios.get(`${API_BASE_URL}/market/data`),
-        axios.get(`${API_BASE_URL}/analytics/summary`),
-      ]);
+      // Use a timeout to prevent hanging Promise.all
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      const endpoints = [
+        `${API_BASE_URL}/devices`,
+        `${API_BASE_URL}/readings/current`,
+        `${API_BASE_URL}/market/data`,
+        `${API_BASE_URL}/analytics/summary`
+      ];
+
+      const responses = await Promise.all(
+        endpoints.map(url => axios.get(url, { signal: controller.signal }))
+      );
+      
+      clearTimeout(timeoutId);
+      const [devRes, readRes, mktRes, anlRes] = responses;
+
       if (devRes.data.success) setDevices(devRes.data.devices);
       if (readRes.data.success) setReadings(readRes.data.readings);
       if (mktRes.data.success) {
         const md = mktRes.data.market_data;
         setMarketData(md);
-        // Persist price point to Firestore for chart history
         try { await savePricePoint(md.current_price_eth, md.current_price_inr); } catch {}
       }
       if (anlRes.data.success) setAnalytics(anlRes.data.summary);
+      
       setBackendOnline(true);
       setLastRefresh(new Date());
-    } catch {
+    } catch (err) {
+      console.error('❌ Dashboard Fetch Error:', err.message);
       setBackendOnline(false);
     } finally {
       setLoading(false);
