@@ -1,0 +1,97 @@
+/* Seller Page */
+.seller-page { animation: fadeIn 0.4s ease; }
+
+.seller-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* Tabs */
+.seller-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: var(--space-7);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  width: fit-content;
+}
+
+.tab-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+.tab-btn:hover  { color: var(--text-primary); }
+.tab-btn.active { background: var(--color-primary); color: #070B14; }
+
+/* Sell button on device card */
+.sell-energy-btn { width: 100%; margin-top: var(--space-4); border-radius: var(--radius-md); }
+.seller-device-card { display: flex; flex-direction: column; }
+
+/* Register Layout */
+.register-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-6);
+}
+
+.register-form-card { padding: var(--space-7); }
+.register-title { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-3); }
+.register-sub { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-6); }
+
+.register-form { display: flex; flex-direction: column; gap: var(--space-4); }
+.register-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+
+.register-fee-note {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-dim);
+  border: 1px solid rgba(0,255,163,0.25);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.register-fee-note span { color: var(--color-primary); font-weight: 600; }
+
+/* Info Card */
+.register-info-card { padding: var(--space-7); display: flex; flex-direction: column; gap: var(--space-5); }
+.register-info-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-2); }
+
+.register-perk { display: flex; gap: var(--space-4); align-items: flex-start; }
+.register-perk-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.register-perk-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+.register-perk-desc  { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+
+/* NFT Cards */
+.nft-card { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.nft-card-header { display: flex; align-items: center; justify-content: space-between; }
+.nft-badge { font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); font-family: monospace; }
+.nft-energy-type { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.nft-detail {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nft-detail span:first-child { color: var(--text-muted); }
+.nft-detail span:last-child  { color: var(--text-primary); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .register-layout { grid-template-columns: 1fr; }
+  .register-form-row { grid-template-columns: 1fr; }
+  .seller-tabs { flex-wrap: wrap; }
+}

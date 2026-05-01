@@ -4,12 +4,14 @@ import { useAuth } from '../context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-
   if (loading) {
-    return <div>Loading...</div>; // Or a loading spinner
+    return (
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh' }}>
+        <div className="spinner spinner-lg" />
+      </div>
+    );
   }
-
-  return isAuthenticated ? children : <Navigate to="/" />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

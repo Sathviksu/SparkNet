@@ -1,80 +1,99 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { signInWithEmail, signUpWithEmail, signInWithGoogle, signOut, onAuthStateChanged } from '../firebase/auth';
+import { upsertUser, getUser } from '../firebase/firestore';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-// Mock user database
-const users = [
-  {
-    email: 'user@example.com',
-    password: 'password',
-  },
-];
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Listen to Firebase Auth state
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
-    setLoading(false);
+    const unsubscribe = onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        // Load Firestore profile
+        try {
+          const profile = await getUser(firebaseUser.uid);
+          setUserProfile(profile);
+        } catch {
+          setUserProfile(null);
+        }
+      } else {
+        setUser(null);
+        setUserProfile(null);
+      }
+      setLoading(false);
+    });
+    return unsubscribe;
   }, []);
 
-  const login = (email, password) => {
-    const foundUser = users.find((u) => u.email === email && u.password === password);
-    if (foundUser) {
-      setIsAuthenticated(true);
-      setUser(foundUser);
-      localStorage.setItem('user', JSON.stringify(foundUser));
-      return true;
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
-      return false;
+  const login = async (email, password) => {
+    const { user: fbUser } = await signInWithEmail(email, password);
+    const profile = await getUser(fbUser.uid);
+    setUserProfile(profile);
+    return fbUser;
+  };
+
+  const loginWithGoogle = async () => {
+    const { user: fbUser } = await signInWithGoogle();
+    // Check if user exists in Firestore
+    let profile = await getUser(fbUser.uid);
+    if (!profile) {
+      // Create default profile for new Google users
+      profile = {
+        email: fbUser.email,
+        displayName: fbUser.displayName,
+        role: 'consumer',
+        createdAt: new Date().toISOString(),
+        walletAddress: null,
+      };
+      await upsertUser(fbUser.uid, profile);
     }
+    setUserProfile({ id: fbUser.uid, ...profile });
+    return fbUser;
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    localStorage.removeItem('user');
+  const signup = async (email, password, role = 'consumer') => {
+    const { user: fbUser } = await signUpWithEmail(email, password);
+    const profile = {
+      email,
+      role,
+      createdAt: new Date().toISOString(),
+      walletAddress: null,
+    };
+    await upsertUser(fbUser.uid, profile);
+    setUserProfile({ id: fbUser.uid, ...profile });
+    return fbUser;
   };
 
-  const logoutAndRedirect = (navigate) => {
-    logout();
-    setTimeout(() => {
-      navigate('/login', { state: { message: 'Signup successful! Please log in.', fromSignup: true } });
-    }, 0);
-  };
+  const logout = () => signOut();
 
-  const signup = (email, password) => {
-    const existingUser = users.find((u) => u.email === email);
-    if (existingUser) {
-      return false; // User already exists
-    }
-
-    const newUser = { email, password };
-    users.push(newUser);
-    return true;
+  const updateWalletAddress = async (address) => {
+    if (!user) return;
+    await upsertUser(user.uid, { walletAddress: address });
+    setUserProfile((prev) => ({ ...prev, walletAddress: address }));
   };
 
   const value = {
-    isAuthenticated,
     user,
+    userProfile,
     loading,
+    isAuthenticated: !!user,
     login,
+    loginWithGoogle,
     signup,
     logout,
-    logoutAndRedirect,
+    updateWalletAddress,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };

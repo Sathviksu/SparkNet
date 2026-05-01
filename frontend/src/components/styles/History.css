@@ -1,0 +1,122 @@
+.history-page {
+  animation: fadeIn 0.4s ease;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-8);
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.filter-chips {
+  display: flex;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+}
+
+.filter-chip {
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+  color: var(--text-primary);
+}
+
+.filter-chip.active {
+  background: var(--color-primary);
+  color: #070B14;
+}
+
+.history-card {
+  min-height: 400px;
+}
+
+.empty-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.3;
+}
+
+.empty-history h3 {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+.tx-date {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.tx-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tx-amount {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+}
+
+.tx-amount .unit {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+  font-weight: 400;
+}
+
+.tx-value .eth-val {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+.tx-value .inr-val {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.hash-link {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.hash-link:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

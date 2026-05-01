@@ -1,55 +1,37 @@
-# SparkNet - IoT Energy Trading Platform
+# ⚡ SparkNet - Premium IoT Energy Trading Platform
 
-A decentralized peer-to-peer energy trading platform that combines IoT sensor data, real-time market simulations, smart contracts, and a web-based UI to enable consumers and producers to trade renewable energy efficiently.
+A production-grade decentralized peer-to-peer energy trading platform. SparkNet combines real-time IoT sensor telemetry, automated market simulations, Ethereum smart contracts, and a high-performance React UI to enable seamless green energy trading.
 
 ![React](https://img.shields.io/badge/React-18.2-blue)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue)
 ![Flask](https://img.shields.io/badge/Flask-3.0-white)
+![Firebase](https://img.shields.io/badge/Firebase-9.0-orange)
+![Jest](https://img.shields.io/badge/Jest-Tests-green)
 
 ---
 
-## 📋 Table of Contents
+## 🌟 Premium Features
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Smart Contracts](#smart-contracts)
-- [Frontend Features](#frontend-features)
-- [Environment Variables](#environment-variables)
+### 🎨 State-of-the-Art UI/UX
+- **Dark-Mode First**: Premium aesthetic using a curated `#070B14` palette with electric neon accents.
+- **Glassmorphism**: Modern frosted-glass design system with real-time blur and depth.
+- **Dynamic Animations**: Smooth transitions, pulsing status indicators, and animated SVG backgrounds.
+- **Fully Responsive**: Optimized for desktop, tablet, and mobile viewports.
 
----
+### 🛡️ Secure Infrastructure
+- **Firebase Auth**: Production-ready authentication replacing insecure mock systems.
+- **Firestore Real-time DB**: Live synchronization of transaction history, price trends, and user profiles.
+- **On-Chain Logic**: ERC-20 Energy Tokens and ERC-721 Producer NFTs ensure immutable ownership and transparency.
 
-## 🌟 Overview
+### 📊 Real-time Data Visualization
+- **Live Price Charts**: Animated `Chart.js` integration showing real-time market fluctuations.
+- **IoT Telemetry Grid**: 5 simulated solar installations across India feeding live production data.
+- **Sustainability Score**: Gamified impact tracking based on clean energy trading volume.
 
-SparkNet enables:
-- **Producers** to register as solar energy providers and sell energy tokens
-- **Consumers** to browse the marketplace and purchase energy with ETH
-- **Real-time monitoring** of IoT device energy production
-- **Sustainability tracking** of carbon footprint impact
-
----
-
-## ✨ Features
-
-### Backend
-- Real-time IoT solar energy simulation
-- Market price dynamics with ETH/INR conversion
-- 5 pre-configured demo devices across India
-
-### Blockchain
-- ERC20 Energy Token for trading
-- ERC721 Producer NFT for producer registration
-- Smart contract-based tokenomics
-
-### Frontend
-- MetaMask wallet integration
-- Real-time energy marketplace
-- Producer registration and management
-- Dashboard with analytics and charts
+### 🧪 Comprehensive Testing Suite
+- **Frontend**: Unit and integration tests using **Jest** and **React Testing Library**.
+- **Backend**: API endpoint validation using **pytest**.
+- **Blockchain**: Smart contract security and logic tests using **Hardhat** & **Chai**.
 
 ---
 
@@ -57,10 +39,11 @@ SparkNet enables:
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React 18, ethers.js, chart.js |
-| Backend | Python Flask, Flask-CORS |
-| Blockchain | Solidity 0.8.24, Hardhat |
-| Storage | localStorage (frontend) |
+| **Frontend** | React 18, ethers.js v6, Chart.js, Firebase SDK |
+| **Backend** | Python Flask, Flask-CORS, IoT Simulation Engine |
+| **Blockchain** | Solidity 0.8.24, Hardhat, OpenZeppelin |
+| **Database** | Firebase Firestore (Cloud persistence) |
+| **Auth** | Firebase Auth (JWT based) |
 
 ---
 
@@ -68,48 +51,18 @@ SparkNet enables:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    SPARKNET ARCHITECTURE                   │
+│                    SPARKNET ECOSYSTEM                      │
 └─────────────────────────────────────────────────────────────┘
 
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Frontend   │────▶│    Backend   │────▶│  Blockchain  │
-│   (React)    │     │   (Flask)    │     │  (Hardhat)   │
+│   Frontend   │◀───▶│   Firebase   │◀───▶│  Blockchain  │
+│   (React)    │     │ (Auth/Store) │     │  (Hardhat)   │
 └──────────────┘     └──────────────┘     └──────────────┘
-       │                    │                    │
-       ▼                    ▼                    ▼
-  Web3 Context         SolarSimulator      EnergyToken
-  Auth Context         Market Engine       ProducerNFT
-  Sustainability       Currency Conv.
-```
-
----
-
-## 📁 Project Structure
-
-```
-sparknet-iotopia-2025/
-├── backend/
-│   ├── app.py              # Flask application
-│   ├── requirements.txt   # Python dependencies
-│   └── README.md          # Backend documentation
-│
-├── blockchain/
-│   ├── contracts/
-│   │   ├── EnergyToken.sol    # ERC20 token contract
-│   │   └── ProducerNFT.sol    # ERC721 NFT contract
-│   ├── scripts/
-│   │   └── deploy.js          # Deployment script
-│   ├── hardhat.config.cjs     # Hardhat configuration
-│   └── deployment-info.json  # Deployed contract addresses
-│
-└── frontend/
-    ├── src/
-    │   ├── components/        # React components
-    │   ├── context/           # React contexts
-    │   ├── hooks/             # Custom hooks
-    │   ├── abi/               # Contract ABIs
-    │   └── utils/             # Utilities & constants
-    └── package.json
+       ▲                    ▲                    ▲
+       │             ┌──────┴──────┐             │
+       └────────────▶│   Backend   │◀────────────┘
+                     │   (Flask)    │
+                     └──────────────┘
 ```
 
 ---
@@ -117,199 +70,73 @@ sparknet-iotopia-2025/
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js (v18+)
 - Python (v3.9+)
 - MetaMask browser extension
+- Firebase Project (Free tier)
 
-### 1. Blockchain Setup
+### 1. Firebase Setup
+1. Create a project at [Firebase Console](https://console.firebase.google.com/).
+2. Enable **Email/Password** Authentication.
+3. Create a **Firestore** database in test mode.
+4. Create `.env` in `frontend/` with your config:
+```env
+REACT_APP_FIREBASE_API_KEY=your_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+```
 
+### 2. Blockchain Setup
 ```bash
 cd blockchain
 npm install
 npx hardhat node
-```
-
-In a new terminal:
-```bash
+# In new terminal
 npx hardhat run scripts/deploy.js --network localhost
 ```
 
-### 2. Backend Setup
-
+### 3. Backend Setup
 ```bash
 cd backend
 python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-
+source venv/bin/activate # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 python app.py
 ```
 
-Backend runs at: `http://localhost:5000`
-
-### 3. Frontend Setup
-
+### 4. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm start
 ```
 
-Frontend runs at: `http://localhost:3000`
-
 ---
 
-## API Documentation
+## 🧪 Running Tests
 
-### Base URL
-```
-http://localhost:5000/api
-```
-
-### Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check with timestamp |
-| `/devices` | GET | List all solar devices |
-| `/readings/current` | GET | Real-time energy readings |
-| `/market/data` | GET | Current price, supply, demand |
-| `/currency/eth-inr-rate` | GET | ETH to INR exchange rate |
-| `/currency/convert` | GET | Convert ETH ↔ INR |
-| `/analytics/summary` | GET | Market analytics summary |
-
-### Sample Response - `/api/market/data`
-
-```json
-{
-  "price_eth": 0.0000125,
-  "price_inr": 5,
-  "total_supply": 1000000,
-  "total_demand": 750000,
-  "active_producers": 5,
-  "timestamp": "2025-05-01T12:00:00Z"
-}
+### Frontend (Jest)
+```bash
+cd frontend
+npm test
 ```
 
----
-
-## 📜 Smart Contracts
-
-### EnergyToken (ERC20)
-
-**Address:** `0x5FbDB2315678afecb367f032d93F642f64180aa3`
-
-| Function | Description |
-|----------|-------------|
-| `buyTokens()` | Purchase energy tokens with ETH |
-| `produceEnergy()` | Mint tokens (producers only) |
-| `updatePrice()` | Adjust token price (owner) |
-| `authorizeProducer()` | Register authorized producers |
-
-### ProducerNFT (ERC721)
-
-**Address:** `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512`
-
-| Function | Description |
-|----------|-------------|
-| `registerProducer()` | Register as energy producer (0.01 ETH) |
-| `getProducer()` | Get producer metadata by token ID |
-| `getOwnerTokens()` | List all NFTs owned by address |
-
----
-
-## 🖥 Frontend Features
-
-### Authentication
-- Email/password login
-- Signup with validation
-- Persistent sessions via localStorage
-
-### Wallet Connection
-- MetaMask integration
-- Auto network detection
-- Account change handling
-
-### Pages
-
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page |
-| `/login` | User login |
-| `/signup` | User registration |
-| `/dashboard` | Analytics & sustainability |
-| `/consumer` | Buy energy tokens |
-| `/seller` | Sell energy / register producer |
-
----
-
-## ⚙️ Environment Variables
-
-### Frontend (`frontend/src/utils/constants.js`)
-
-```javascript
-export const API_BASE_URL = "http://localhost:5000/api";
-export const ERC20_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-export const ERC721_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-export const CHAIN_ID = 31337;
-export const RPC_URL = "http://localhost:8545";
+### Backend (Pytest)
+```bash
+cd backend
+pytest
 ```
 
-### Backend Configuration
-
-- Default ETH/INR rate: ₹200,000
-- Token price: ₹5/kWh (0.0000125 ETH)
-- Market update interval: 30 seconds
-
----
-
-## 📱 Demo Accounts
-
-### Test User
+### Smart Contracts (Hardhat)
+```bash
+cd blockchain
+npx hardhat test
 ```
-Email: user@example.com
-Password: password
-```
-
-### Demo Solar Devices
-
-| ID | Location | Capacity | Efficiency |
-|----|----------|----------|------------|
-| SOLAR_001 | Delhi NCR | 5 kW | 18% |
-| SOLAR_002 | Mumbai | 7.5 kW | 20% |
-| SOLAR_003 | Bangalore | 3.5 kW | 17% |
-| SOLAR_004 | Jaipur | 6 kW | 19% |
-| SOLAR_005 | Kolkata | 4.5 kW | 16% |
-
----
-
-## 🔧 Troubleshooting
-
-### MetaMask Connection Issues
-- Ensure Hardhat node is running
-- Check chain ID matches (31337)
-- Add network manually if auto-detect fails
-
-### Backend Connection
-- Verify Flask is running on port 5000
-- Check CORS settings if experiencing cross-origin errors
-
-### Contract Errors
-- Ensure contracts are deployed
-- Verify contract addresses in `constants.js`
 
 ---
 
 ## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
-## 👥 Contributors
-
-- [Shubham](https://github.com/shub11-gh)
+MIT License - SparkNet IoTopia 2025

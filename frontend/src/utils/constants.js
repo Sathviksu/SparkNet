@@ -8,7 +8,7 @@ export const CONTRACT_ADDRESSES = {
 
 export const NETWORK_CONFIG = {
   CHAIN_ID: parseInt(process.env.REACT_APP_CHAIN_ID || '31337'),
-  RPC_URL: process.env.REACT_APP_PROVIDER_URL || 'http://localhost:8545'
+  RPC_URL: process.env.REACT_APP_PROVIDER_URL || 'http://127.0.0.1:8545'
 };
 
 // Debug function

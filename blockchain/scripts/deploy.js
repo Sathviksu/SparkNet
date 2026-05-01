@@ -32,21 +32,26 @@ async function main() {
   const producerNFTAddress = await producerNFT.getAddress();
   console.log("✅ ProducerNFT deployed to:", producerNFTAddress);
   
-  // Authorize demo producers
+  // Authorize demo producers (using valid checksum addresses)
   console.log("\n🔐 Setting up demo producers...");
   
   const demoProducers = [
-    "0x742d35Cc123C6f5E5b9F3c3123456789abcdef00",
-    "0x851b42Dd123E7f8F9c4D3123456789abcdef11"
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Hardhat Account #1
+    "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"  // Hardhat Account #2
   ];
   
-  for (const producer of demoProducers) {
-    try {
-      await energyToken.authorizeProducer(producer);
-      console.log(`✅ Authorized producer: ${producer}`);
-    } catch (error) {
-      console.log(`❌ Failed to authorize ${producer}:`, error.message);
+  if (hre.network.name === "hardhat" || hre.network.name === "localhost") {
+    for (const producer of demoProducers) {
+      try {
+        const tx = await energyToken.authorizeProducer(producer);
+        await tx.wait();
+        console.log(`✅ Authorized producer: ${producer}`);
+      } catch (error) {
+        console.log(`❌ Failed to authorize ${producer}:`, error.message);
+      }
     }
+  } else {
+    console.log("⏩ Skipping demo producer authorization on live network.");
   }
   
   // Display pricing info
@@ -79,3 +84,10 @@ async function main() {
   fs.writeFileSync('./deployment-info.json', JSON.stringify(deploymentInfo, null, 2));
   console.log("💾 Saved deployment info to deployment-info.json");
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

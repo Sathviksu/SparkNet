@@ -153,7 +153,7 @@ def update_data():
     if len(PRICE_HISTORY)>500:
         PRICE_HISTORY = PRICE_HISTORY[-500:]
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Price: {eth_price:.8f} ETH (₹{inr_price:.2f})")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Price: {eth_price:.8f} ETH (INR {inr_price:.2f})")
     return readings
 
 def background_data_loop():
@@ -224,15 +224,25 @@ def analytics_summary():
     total_capacity = sum(d['capacity_kw'] for d in SOLAR_DEVICES)
     latest = update_data()
     production = sum(r['energy_produced_kwh'] for r in latest)
+    utilization = round((production / total_capacity * 100), 1) if total_capacity > 0 else 0
     return jsonify({
-        'success':True,
-        'summary':{
-            'total_devices':len(SOLAR_DEVICES),
-            'current_production_kwh':round(production,2),
-            'market_price_eth':MARKET_DATA['current_price_eth'],
-            'market_price_inr':MARKET_DATA['current_price_inr']
+        'success': True,
+        'summary': {
+            'total_devices': len(SOLAR_DEVICES),
+            'total_capacity_kw': round(total_capacity, 2),
+            'current_production_kwh': round(production, 2),
+            'capacity_utilization': utilization,
+            'market_price_eth': MARKET_DATA['current_price_eth'],
+            'market_price_inr': MARKET_DATA['current_price_inr']
         }
     })
+
+@app.route('/api/price-history')
+@cross_origin()
+def price_history():
+    limit = request.args.get('limit', 50, type=int)
+    history = PRICE_HISTORY[-limit:] if len(PRICE_HISTORY) >= limit else PRICE_HISTORY
+    return jsonify({'success': True, 'history': history, 'count': len(history)})
 
 # ===== SERVER STARTUP =====
 

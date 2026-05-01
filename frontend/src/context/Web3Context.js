@@ -23,10 +23,20 @@ export function Web3Provider({ children }) {
   const REQUIRED_CHAIN_ID = NETWORK_CONFIG.CHAIN_ID;
 
   const connectWallet = async () => {
+    console.log('🔍 Checking for MetaMask (window.ethereum)...');
+    
+    // Give a tiny moment for injection if needed
     if (!window.ethereum) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    if (!window.ethereum) {
+      console.error('❌ window.ethereum is undefined. MetaMask not found.');
       alert('🦊 Please install MetaMask!\n\nVisit: https://metamask.io/download/');
       return;
     }
+
+    console.log('✅ window.ethereum detected');
 
     try {
       setLoading(true);

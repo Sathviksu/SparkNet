@@ -9,11 +9,13 @@ import SignupPage from './components/SignupPage';
 import Dashboard from './components/Dashboard';
 import Consumer from './components/Consumer';
 import Seller from './components/Seller';
+import History from './components/History';
+import Leaderboard from './components/Leaderboard';
 import MainLayout from './components/MainLayout';
 import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 import './App.css';
-import './styles/Dashboard.css';
+
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="consumer" element={<Consumer />} />
                 <Route path="seller" element={<Seller />} />
+                <Route path="history" element={<History />} />
+                <Route path="leaderboard" element={<Leaderboard />} />
               </Route>
             </Routes>
           </div>
