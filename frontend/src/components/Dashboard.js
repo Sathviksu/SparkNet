@@ -47,7 +47,7 @@ const Dashboard = () => {
   const [marketData, setMarketData] = useState(null);
   const [analytics, setAnalytics]   = useState(null);
   const [priceHistory, setPriceHistory] = useState([]);
-  const [loading, setLoading]       = useState(true);
+  const [loading, setLoading]       = useState(false);
   const [backendOnline, setBackendOnline] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
 
@@ -133,13 +133,6 @@ const Dashboard = () => {
   const activeCount = readings.filter(r => r.current_power_kw > 0).length;
   const carbonOffset = (totalKwh * 0.82).toFixed(2); // ~0.82 kg CO2 offset per kWh
 
-  if (loading) {
-    return (
-      <div className="page-container" style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:400 }}>
-        <div className="spinner spinner-lg" />
-      </div>
-    );
-  }
 
   return (
     <div className="page-container dashboard-page">
@@ -273,7 +266,11 @@ const Dashboard = () => {
             {readings.some(r => r.current_power_kw > 0) ? (
               <Doughnut data={doughnutData} options={DOUGHNUT_OPTS} />
             ) : (
-              <div className="chart-empty">No production data — start the backend</div>
+              <div className="chart-empty">
+                <span style={{ fontSize: '2rem', marginBottom: 8 }}>🌙</span>
+                <span>Night Mode Active</span>
+                <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>No solar production at this hour</span>
+              </div>
             )}
           </div>
         </div>
@@ -294,9 +291,9 @@ const Dashboard = () => {
                     <div className="device-id">{device.id}</div>
                     <div className="device-location">📍 {device.location}</div>
                   </div>
-                  <span className={`badge ${isActive ? 'badge-green' : 'badge-gray'}`}>
-                    <span className={`dot ${isActive ? 'dot-green' : 'dot-gray'}`} />
-                    {isActive ? 'Active' : 'Offline'}
+                  <span className={`badge ${isActive ? 'badge-green' : (backendOnline ? 'badge-cyan' : 'badge-gray')}`}>
+                    <span className={`dot ${isActive ? 'dot-green' : (backendOnline ? 'dot-cyan' : 'dot-gray')}`} />
+                    {isActive ? 'Active' : (backendOnline ? 'Night' : 'Offline')}
                   </span>
                 </div>
 

@@ -4,12 +4,16 @@ import { db } from '../firebase/config';
 import './styles/Leaderboard.css';
 
 const Leaderboard = () => {
-  const [leaders, setLeaders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [leaders, setLeaders] = useState([
+    { id: '1', displayName: 'EcoWarrior_99', sustainabilityScore: 1250.5, email: 'eco@example.com' },
+    { id: '2', displayName: 'SolarMaster', sustainabilityScore: 980.2, email: 'solar@example.com' },
+    { id: '3', displayName: 'GreenTrader', sustainabilityScore: 750.0, email: 'green@example.com' },
+    { id: '4', displayName: 'CarbonNeutral', sustainabilityScore: 620.8, email: 'carbon@example.com' },
+    { id: '5', displayName: 'WindRider', sustainabilityScore: 410.5, email: 'wind@example.com' },
+  ]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // In a real app, users would have a 'sustainabilityScore' in their profile
-    // For this demo, we'll try to fetch or fallback to mock data
     const q = query(
       collection(db, 'userProfiles'),
       orderBy('sustainabilityScore', 'desc'),
@@ -24,32 +28,13 @@ const Leaderboard = () => {
       
       if (data.length > 0) {
         setLeaders(data);
-      } else {
-        // Fallback mock data for demo if DB is empty
-        setLeaders([
-          { id: '1', displayName: 'EcoWarrior_99', sustainabilityScore: 1250.5, email: 'eco@example.com' },
-          { id: '2', displayName: 'SolarMaster', sustainabilityScore: 980.2, email: 'solar@example.com' },
-          { id: '3', displayName: 'GreenTrader', sustainabilityScore: 750.0, email: 'green@example.com' },
-          { id: '4', displayName: 'CarbonNeutral', sustainabilityScore: 620.8, email: 'carbon@example.com' },
-          { id: '5', displayName: 'WindRider', sustainabilityScore: 410.5, email: 'wind@example.com' },
-        ]);
       }
-      setLoading(false);
     }, (error) => {
       console.error("Leaderboard fetch error:", error);
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="page-container flex-center" style={{ minHeight: '400px' }}>
-        <div className="spinner spinner-lg" />
-      </div>
-    );
-  }
 
   return (
     <div className="page-container leaderboard-page">

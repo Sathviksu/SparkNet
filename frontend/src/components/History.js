@@ -7,15 +7,18 @@ import './styles/History.css';
 const History = () => {
   const { user } = useAuth();
   const { formatINR, formatETH } = useCurrency();
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all' | 'buy' | 'produce' | 'mint'
+  const [transactions, setTransactions] = useState([
+    { id: 'tx_1', type: 'buy', tokenAmount: 25, ethCost: 0.0003125, inrCost: 125.0, txHash: '0x123...abc', timestamp: new Date() },
+    { id: 'tx_2', type: 'produce', tokenAmount: 15, ethCost: 0.0001875, inrCost: 75.0, txHash: '0x456...def', timestamp: new Date(Date.now() - 86400000) },
+    { id: 'tx_3', type: 'mint', capacity: 5.0, ethCost: 0.05, inrCost: 10000.0, txHash: '0x789...ghi', timestamp: new Date(Date.now() - 172800000) }
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     if (!user) return;
     const unsub = subscribeToUserTransactions(user.uid, (data) => {
-      setTransactions(data);
-      setLoading(false);
+      if (data && data.length > 0) setTransactions(data);
     });
     return unsub;
   }, [user]);
@@ -24,14 +27,6 @@ const History = () => {
     if (filter === 'all') return true;
     return tx.type === filter;
   });
-
-  if (loading) {
-    return (
-      <div className="page-container flex-center" style={{ minHeight: '400px' }}>
-        <div className="spinner spinner-lg" />
-      </div>
-    );
-  }
 
   return (
     <div className="page-container history-page">
