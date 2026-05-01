@@ -195,21 +195,22 @@ const Dashboard = () => {
         <div className="glass-card progress-card">
           <div className="card-header-flex">
             <h3 className="card-mini-title">🌱 Sustainability Rank</h3>
-            <span className="badge badge-green">Level {Math.floor(sustainabilityScore / 100) + 1}</span>
+            <span className="badge badge-green">Level {Math.floor((sustainabilityScore || 0) / 100) + 1}</span>
           </div>
           <div className="rank-display">
             <div className="rank-name">
-              {sustainabilityScore < 100 ? 'Seedling' : 
+              {!sustainabilityScore ? 'Seedling' :
+               sustainabilityScore < 100 ? 'Seedling' : 
                sustainabilityScore < 300 ? 'Sprout' : 
                sustainabilityScore < 600 ? 'Sapling' : 
                sustainabilityScore < 1000 ? 'Tree' : 'Forest Guardian'}
             </div>
-            <div className="rank-score">{sustainabilityScore.toFixed(1)} / {Math.ceil((sustainabilityScore + 1) / 100) * 100} PTS</div>
+            <div className="rank-score">{(sustainabilityScore || 0).toFixed(1)} / {Math.ceil(((sustainabilityScore || 0) + 1) / 100) * 100} PTS</div>
           </div>
           <div className="progress-track" style={{ height: 10, margin: '12px 0' }}>
-            <div className="progress-fill" style={{ width: `${(sustainabilityScore % 100)}%` }} />
+            <div className="progress-fill" style={{ width: `${((sustainabilityScore || 0) % 100)}%` }} />
           </div>
-          <p className="forecast-note">Earn {100 - (sustainabilityScore % 100).toFixed(0)} more points to reach next rank.</p>
+          <p className="forecast-note">Earn {100 - ((sustainabilityScore || 0) % 100).toFixed(0)} more points to reach next rank.</p>
         </div>
       </div>
 
@@ -239,7 +240,7 @@ const Dashboard = () => {
           <div className="stat-card-icon">🌱</div>
           <div className="stat-card-label">Carbon Offset</div>
           <div className="stat-card-value stat-card-value-cyan">{carbonOffset}</div>
-          <div className="stat-card-sub">kg CO₂ saved · Score: {sustainabilityScore.toFixed(1)}</div>
+          <div className="stat-card-sub">kg CO₂ saved · Score: {(sustainabilityScore || 0).toFixed(1)}</div>
         </div>
       </div>
 
